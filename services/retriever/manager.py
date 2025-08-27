@@ -10,24 +10,21 @@ class RetrieverManager:
         self.collection_name = collection_name
         self.db = db
         self.dal = MongoDAL(self.db)
-        self.state = self._load_state()
+        self.skip = self._load_skip()
 
-    def _load_state(self):
+    def _load_skip(self):
         if not os.path.exists(STATE_FILE):
-            return {"last_date": None, "last_id": None}
+            return 0
         with open(STATE_FILE, 'r') as f:
-            return json.load(f)
+            return int(json.load(f).get("skip", 0))
 
-    def _save_state(self, last_date, last_id):
+    def _save_skip(self, skip):
         with open(STATE_FILE, 'w') as f:
-            json.dump({"last_date": last_date, "last_id": str(last_id)}, f)
+            json.dump({"skip": skip}, f)
 
     def fetch_next(self, limit=100):
-        last_date = self.state.get("last_date")
-        last_id = self.state.get("last_id")
-        batch = self.dal.fetch_next_batch(self.collection_name, last_date, last_id, limit)
+        batch = self.dal.fetch_next_batch(self.collection_name, skip=self.skip, limit=limit)
         if batch:
-            last_doc = batch[-1]
-            self._save_state(last_doc.get("createdate"), last_doc.get("_id"))
-            self.state = {"last_date": last_doc.get("createdate"), "last_id": str(last_doc.get("_id"))}
+            self.skip += len(batch)
+            self._save_skip(self.skip)
         return batch
