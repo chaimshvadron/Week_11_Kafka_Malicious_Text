@@ -1,4 +1,4 @@
-from kafka_configurations import get_producer_config
+from shared.kafka.kafka_configurations import get_producer_config
 
 
 producer = get_producer_config()
