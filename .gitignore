@@ -44,3 +44,4 @@ coverage.xml
 
 # Node
 node_modules/
+.idea/
