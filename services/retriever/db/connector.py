@@ -27,7 +27,7 @@ class MongoDBAtlasConnection:
 
 
 if __name__ == "__main__":
-    with MongoDBAtlasConnection() as conn:
-        db = conn.client[os.getenv("MONGODB_DBNAME")]
-        print("Connection test successful:", db is not None)
+	with MongoDBAtlasConnection() as conn:
+		db = conn.client[os.getenv("MONGODB_DBNAME")]
+		print("Connection test successful:", db is not None)
 
