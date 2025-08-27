@@ -1,13 +1,9 @@
 import os
 from pymongo import MongoClient
-from dotenv import find_dotenv, load_dotenv
-
-dotenv_path = find_dotenv()
-load_dotenv(dotenv_path)
 
 class MongoDBConnection:
-    def __init__(self):
-        self.connection_string = os.getenv("MONGODB_CONNECTION_STRING")
+    def __init__(self, connection_string):
+        self.connection_string = connection_string
         self.client = None
 
     def __enter__(self):
