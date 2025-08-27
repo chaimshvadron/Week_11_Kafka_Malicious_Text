@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Environment variables
+.env
+.env.*
+
+# VS Code
+.vscode/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Docker
+*.db
+*.sqlite3
+docker-compose.override.yml
+
+# Test outputs
+htmlcov/
+coverage.xml
+*.cover
+
+# Other
+*.bak
+*.swp
+*.swo
+
+# Node
+node_modules/
