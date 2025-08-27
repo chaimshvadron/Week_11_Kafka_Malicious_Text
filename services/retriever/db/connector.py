@@ -1,0 +1,33 @@
+import os
+from pymongo import MongoClient
+from dotenv import find_dotenv, load_dotenv
+
+dotenv_path = find_dotenv()
+load_dotenv(dotenv_path)
+
+class MongoDBAtlasConnection:
+	def __init__(self):
+		self.connection_string = os.getenv("MONGODB_CONNECTION_STRING")
+		self.client = None
+
+	def __enter__(self):
+		try:
+			self.client = MongoClient(self.connection_string)
+			print(f"Connected to MongoDB Atlas")
+			return self
+		except Exception as e:
+			print(f"Failed to connect to MongoDB Atlas: {e}")
+			raise
+
+	def __exit__(self, exc_type, exc_val, exc_tb):
+		if self.client:
+			self.client.close()
+			print("MongoDB Atlas connection closed.")
+
+
+
+if __name__ == "__main__":
+	with MongoDBAtlasConnection() as conn:
+		db = conn.client[os.getenv("MONGODB_DBNAME")]
+		print("Connection test successful:", db is not None)
+
