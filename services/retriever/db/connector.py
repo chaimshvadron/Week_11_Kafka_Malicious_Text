@@ -6,9 +6,9 @@ dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
 
 class MongoDBAtlasConnection:
-	def __init__(self):
+	def __init__(self, db_name):
 		self.connection_string = os.getenv("MONGODB_CONNECTION_STRING")
-		self.db_name = os.getenv("MONGODB_DBNAME", "IranMalDB")
+		self.db_name = db_name
 		self.client = None
 		self.db = None
 
