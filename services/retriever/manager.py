@@ -10,7 +10,8 @@ class RetrieverManager:
         self.collection_name = collection_name
         self.db = db
         self.dal = MongoDAL(self.db)
-        self.skip = self._load_skip()
+        self.skip = 0
+        self._save_skip(self.skip)
 
     def _load_skip(self):
         if not os.path.exists(STATE_FILE):
@@ -23,6 +24,7 @@ class RetrieverManager:
             json.dump({"skip": skip}, f)
 
     def fetch_next(self, limit=100):
+        
         batch = self.dal.fetch_next_batch(self.collection_name, skip=self.skip, limit=limit)
         if batch:
             self.skip += len(batch)

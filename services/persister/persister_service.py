@@ -5,8 +5,8 @@ from services.persister.dal import PersisterDAL
 
 class PersisterService:
     def __init__(self):
-        self.mongo_uri = "mongodb://localhost:27017/"
-        self.db_name = "IranMalDBLocal"
+        self.mongo_uri = os.getenv("MONGO_URI")
+        self.db_name = os.getenv("DB_NAME")
         self.consumer = get_consumer([
             "enriched_preprocessed_tweets_antisemitic",
             "enriched_preprocessed_tweets_not_antisemitic"
