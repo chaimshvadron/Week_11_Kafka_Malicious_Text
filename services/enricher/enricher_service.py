@@ -9,8 +9,7 @@ from shared.kafka.producer import send_messages
 class EnricherService:
     def __init__(self):
         self.sentiment_processor = SentimentProcessor()
-        weapon_list_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'weapon_list.txt'))
-        self.weapon_processor = WeaponProcessor(weapon_list_path=weapon_list_path)
+        self.weapon_processor = WeaponProcessor(weapon_list_path="data/weapon_list.txt")
         self.date_processor = DateProcessor()
         self.consumer = get_consumer(['preprocessed_tweets_antisemitic', 'preprocessed_tweets_not_antisemitic'])
 

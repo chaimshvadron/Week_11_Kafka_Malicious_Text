@@ -5,8 +5,8 @@ from services.persister.dal import PersisterDAL
 
 class PersisterService:
     def __init__(self):
-        self.mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
-        self.db_name = os.getenv("DB_NAME", "IranMalDBLocal")
+        self.mongo_uri = "mongodb://localhost:27017/"
+        self.db_name = "IranMalDBLocal"
         self.consumer = get_consumer([
             "enriched_preprocessed_tweets_antisemitic",
             "enriched_preprocessed_tweets_not_antisemitic"
@@ -21,7 +21,7 @@ class PersisterService:
 
     def persist(self, db, topic, data):
         collection = self.get_collection_by_topic(db, topic)
-        if collection:
+        if collection is not None:
             PersisterDAL.insert_document(collection, data)
 
     def run(self):
