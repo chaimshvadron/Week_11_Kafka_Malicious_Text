@@ -21,6 +21,8 @@ class EnricherService:
         message['weapons_detected'] = processed_weapon
         processed_date = self.date_processor.find_latest_date(original_text)
         message['relevant_timestamp'] = processed_date
+        if 'TweetID' in message:
+            del message['TweetID']
         return message
 
     def get_output_topic(self, topic):
