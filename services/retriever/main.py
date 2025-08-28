@@ -27,9 +27,9 @@ def main():
     if not MONGO_URI or not DB_NAME:
         print("Missing MONGO_URI or DB_NAME in environment.")
         return
-    while True:
-        with MongoDBConnection(MONGO_URI, DB_NAME) as mongo_conn:
-            manager = RetrieverManager(mongo_conn.db, COLLECTION_NAME)
+    with MongoDBConnection(MONGO_URI, DB_NAME) as mongo_conn:
+        manager = RetrieverManager(mongo_conn.db, COLLECTION_NAME)
+        while True:
             batch = manager.fetch_next(limit=100)
             if not batch:
                 print("No more tweets to fetch. Waiting for new data...")
@@ -37,7 +37,7 @@ def main():
                 continue
             publish_to_kafka(batch)
             print(f"Published {len(batch)} tweets to Kafka.")
-        time.sleep(60)
+            time.sleep(60)
 
 if __name__ == "__main__":
     main()

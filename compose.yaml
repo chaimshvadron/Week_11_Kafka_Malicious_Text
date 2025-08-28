@@ -1,32 +1,44 @@
 services:
   retriever:
+    build:
+      context: .
+      dockerfile: services/retriever/Dockerfile
     image: chaimshvadron/iranian-terror-tweets-hunter-retriever:latest
     depends_on:
       - kafka
     restart: unless-stopped
     environment:
-      MONGO_URI: mongodb://mongo:27017/
-      DB_NAME: IranMalDBLocal
+      MONGO_URI: mongodb+srv://IRGC_NEW:iran135@cluster0.6ycjkak.mongodb.net/IranMalDB
+      DB_NAME: IranMalDB
       COLLECTION_NAME: tweets
-      KAFKA_SERVERS: kafka:9092
+      KAFKA_SERVERS: kafka:9093
 
   preprocessor:
+    build:
+      context: .
+      dockerfile: services/preprocessor/Dockerfile
     image: chaimshvadron/iranian-terror-tweets-hunter-preprocessor:latest
     depends_on:
       - kafka
     restart: unless-stopped
     environment:
-      KAFKA_SERVERS: kafka:9092
+      KAFKA_SERVERS: kafka:9093
 
   enricher:
+    build:
+      context: .
+      dockerfile: services/enricher/Dockerfile
     image: chaimshvadron/iranian-terror-tweets-hunter-enricher:latest
     depends_on:
       - kafka
     restart: unless-stopped
     environment:
-      KAFKA_SERVERS: kafka:9092
+      KAFKA_SERVERS: kafka:9093
 
   persister:
+    build:
+      context: .
+      dockerfile: services/persister/Dockerfile
     image: chaimshvadron/iranian-terror-tweets-hunter-persister:latest
     depends_on:
       - kafka
@@ -35,19 +47,24 @@ services:
     environment:
       MONGO_URI: mongodb://mongo:27017/
       DB_NAME: IranMalDBLocal
-      KAFKA_SERVERS: kafka:9092
+      KAFKA_SERVERS: kafka:9093
 
   dataretrieval:
+    build:
+      context: .
+      dockerfile: services/dataretrieval/Dockerfile
     image: chaimshvadron/iranian-terror-tweets-hunter-dataretrieval:latest
     depends_on:
       - mongo
     restart: unless-stopped
+    ports:
+      - "8000:8000"
     environment:
       MONGO_URI: mongodb://mongo:27017/
       DB_NAME: IranMalDBLocal
 
   kafka:
-    image: apache/kafka:latest
+    image: apache/kafka
     ports:
       - "9092:9092"
     environment:
@@ -69,7 +86,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   mongo:
-    image: mongodb/mongodb-community-server:latest
+    image: mongodb/mongodb-community-server
 
     ports:
       - "27017:27017"

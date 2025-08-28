@@ -3,10 +3,15 @@ import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 
-nltk.data.path.append("resources/nltk_data")
+
 
 class TextProcessor:
     def __init__(self):
+        nltk_dir = "/tmp/nltk_data"
+        os.makedirs(nltk_dir, exist_ok=True)
+        nltk.data.path.append(nltk_dir)
+        nltk.download('stopwords', download_dir=nltk_dir, quiet=True)
+        nltk.download('wordnet', download_dir=nltk_dir, quiet=True)
         self.stop_words = set(stopwords.words('english'))
         self.lemmatizer = WordNetLemmatizer()
 
