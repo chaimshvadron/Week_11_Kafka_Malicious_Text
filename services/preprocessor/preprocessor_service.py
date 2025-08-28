@@ -1,7 +1,3 @@
-import sys
-import os
-
-
 from shared.text_processing.text_processor import TextProcessor
 from shared.kafka.consumer import get_consumer
 from shared.kafka.producer import send_messages
