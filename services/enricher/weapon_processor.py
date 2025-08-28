@@ -14,7 +14,6 @@ class WeaponProcessor:
         weapon_references = []
         for weapon in self.weapon_list:
             if weapon in text:
-                print(f"Found weapon: {weapon}")
                 weapon_references.append(weapon)
         if weapon_references:
             return weapon_references
