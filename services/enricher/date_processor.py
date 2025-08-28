@@ -3,7 +3,7 @@ from datetime import datetime
 class DateProcessor:
 
     def __init__(self):
-        self.format = "%d-%m-%Y"
+        self.format = "%Y-%m-%d"
 
     def get_dates_in_text(self, text):
         list_date = []
@@ -28,7 +28,3 @@ class DateProcessor:
             return date
         return None
 
-
-#
-#
-#
