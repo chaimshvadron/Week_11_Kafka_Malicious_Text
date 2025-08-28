@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hostile-tweets-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hostile-tweets-app
+  template:
+    metadata:
+      labels:
+        app: hostile-tweets-app
+    spec:
+      containers:
+      - name: hostile-tweets-app
+        image: chaimshvadron/malicious_text_feature:V7
+        imagePullPolicy: Always
+        env:
+        - name: MONGODB_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGODB_CONNECTION_STRING
+        - name: MONGODB_DBNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGODB_DBNAME
+        ports:
+        - containerPort: 8000
