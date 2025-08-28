@@ -3,7 +3,7 @@ import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 
-nltk.data.path.append("nltk_data")
+nltk.data.path.append("resources/nltk_data")
 
 class TextProcessor:
     def __init__(self):
