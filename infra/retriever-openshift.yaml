@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: retriever
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: retriever
+  template:
+    metadata:
+      labels:
+        app: retriever
+    spec:
+      containers:
+      - name: retriever
+        image: chaimshvadron/iranian-terror-tweets-hunter-retriever:latest
+        imagePullPolicy: Always
+        env:
+        - name: MONGO_URI
+          value: mongodb://mongo:27017/
+        - name: DB_NAME
+          value: IranMalDBLocal
+        - name: COLLECTION_NAME
+          value: tweets
+        - name: KAFKA_SERVERS
+          value: kafka:9092
+        ports:
+        - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: retriever-service
+spec:
+  selector:
+    app: retriever
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: retriever-route
+spec:
+  to:
+    kind: Service
+    name: retriever-service
+  port:
+    targetPort: 8000
+  tls:
+    termination: edge

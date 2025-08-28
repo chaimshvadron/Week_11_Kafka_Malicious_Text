@@ -1,13 +1,16 @@
-FROM python:3.10-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt /app
 
-COPY services/dataretrieval/ ./services/dataretrieval/
-COPY shared/ ./shared/
+RUN pip install --upgrade pip
+RUN pip install -r /app/requirements.txt
 
+COPY services/dataretrieval /app/services/dataretrieval
+COPY shared /app/shared
 ENV PYTHONUNBUFFERED=1
-
-CMD ["python", "-m", "services.dataretrieval.dataretrieval_service"]
+ENV NLTK_DATA=/app/resources/nltk_data
+ENV PYTHONPATH=/app:/app/shared
+EXPOSE 8000
+CMD ["uvicorn", "services.dataretrieval.main:app", "--host", "0.0.0.0", "--port", "8000"]

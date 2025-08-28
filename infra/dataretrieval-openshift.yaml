@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dataretrieval
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dataretrieval
+  template:
+    metadata:
+      labels:
+        app: dataretrieval
+    spec:
+      containers:
+      - name: dataretrieval
+        image: chaimshvadron/iranian-terror-tweets-hunter-dataretrieval:latest
+        imagePullPolicy: Always
+        env:
+        - name: MONGO_URI
+          value: mongodb://mongo:27017/
+        - name: DB_NAME
+          value: IranMalDBLocal
+        ports:
+        - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dataretrieval-service
+spec:
+  selector:
+    app: dataretrieval
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: dataretrieval-route
+spec:
+  to:
+    kind: Service
+    name: dataretrieval-service
+  port:
+    targetPort: 8000
+  tls:
+    termination: edge
