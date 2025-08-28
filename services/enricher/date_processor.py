@@ -28,7 +28,3 @@ class DateProcessor:
             return date
         return None
 
-
-#
-#
-#
