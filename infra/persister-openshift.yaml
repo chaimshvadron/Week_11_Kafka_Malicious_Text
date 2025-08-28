@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: persister
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: persister
+  template:
+    metadata:
+      labels:
+        app: persister
+    spec:
+      containers:
+      - name: persister
+        image: chaimshvadron/iranian-terror-tweets-hunter-persister:latest
+        imagePullPolicy: Always
+        env:
+        - name: MONGO_URI
+          value: mongodb://mongo:27017/
+        - name: DB_NAME
+          value: IranMalDBLocal
+        - name: KAFKA_SERVERS
+          value: kafka:9092
+        ports:
+        - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: persister-service
+spec:
+  selector:
+    app: persister
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: persister-route
+spec:
+  to:
+    kind: Service
+    name: persister-service
+  port:
+    targetPort: 8000
+  tls:
+    termination: edge

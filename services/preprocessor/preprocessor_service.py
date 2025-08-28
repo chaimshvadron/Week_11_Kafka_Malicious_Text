@@ -10,7 +10,7 @@ class PreprocessorService:
     def process_message(self, message):
         original_text = message.get('text', '')
         processed_text = self.processor.process(original_text)
-        message['processed_text'] = processed_text
+        message['clean_text'] = processed_text
         return message
 
     def get_output_topic(self, topic):

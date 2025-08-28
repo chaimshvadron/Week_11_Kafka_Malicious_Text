@@ -1,0 +1,76 @@
+services:
+  retriever:
+    image: chaimshvadron/iranian-terror-tweets-hunter-retriever:latest
+    depends_on:
+      - kafka
+    restart: unless-stopped
+    environment:
+      MONGO_URI: mongodb://mongo:27017/
+      DB_NAME: IranMalDBLocal
+      COLLECTION_NAME: tweets
+      KAFKA_SERVERS: kafka:9092
+
+  preprocessor:
+    image: chaimshvadron/iranian-terror-tweets-hunter-preprocessor:latest
+    depends_on:
+      - kafka
+    restart: unless-stopped
+    environment:
+      KAFKA_SERVERS: kafka:9092
+
+  enricher:
+    image: chaimshvadron/iranian-terror-tweets-hunter-enricher:latest
+    depends_on:
+      - kafka
+    restart: unless-stopped
+    environment:
+      KAFKA_SERVERS: kafka:9092
+
+  persister:
+    image: chaimshvadron/iranian-terror-tweets-hunter-persister:latest
+    depends_on:
+      - kafka
+      - mongo
+    restart: unless-stopped
+    environment:
+      MONGO_URI: mongodb://mongo:27017/
+      DB_NAME: IranMalDBLocal
+      KAFKA_SERVERS: kafka:9092
+
+  dataretrieval:
+    image: chaimshvadron/iranian-terror-tweets-hunter-dataretrieval:latest
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    environment:
+      MONGO_URI: mongodb://mongo:27017/
+      DB_NAME: IranMalDBLocal
+
+  kafka:
+    image: apache/kafka:latest
+    ports:
+      - "9092:9092"
+    environment:
+      # Configure listeners for both docker and host communication
+      KAFKA_LISTENERS: CONTROLLER://localhost:9091,HOST://0.0.0.0:9092,DOCKER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: HOST://localhost:9092,DOCKER://kafka:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,DOCKER:PLAINTEXT,HOST:PLAINTEXT
+
+      # Settings required for KRaft mode
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9091
+
+      # Listener to use for broker-to-broker communication
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+
+      # Required for a single node cluster
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  mongo:
+    image: mongodb/mongodb-community-server:latest
+
+    ports:
+      - "27017:27017"
+    restart: unless-stopped

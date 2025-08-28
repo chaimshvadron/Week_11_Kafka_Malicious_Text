@@ -2,8 +2,8 @@ from shared.db.connector import MongoDBConnection
 import os
 from services.dataretrieval.dal import DataRetrievalDAL
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
-DB_NAME = os.getenv("DB_NAME", "IranMalDBLocal")
+MONGO_URI = os.getenv("MONGO_URI")
+DB_NAME = os.getenv("DB_NAME")
 
 def convert_objectid(data):
     for doc in data:
