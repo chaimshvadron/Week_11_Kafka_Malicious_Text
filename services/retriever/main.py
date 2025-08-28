@@ -13,11 +13,14 @@ COLLECTION_NAME = os.getenv("COLLECTION_NAME")
 
 
 def publish_to_kafka(batch):
-    antisemitic_msgs = [doc for doc in batch if doc.get("antisemietic", 0)]
-    not_antisemitic_msgs = [doc for doc in batch if not doc.get("antisemietic", 0)]
+    antisemitic_msgs = [doc for doc in batch if doc.get("Antisemitic", 0)]
+    not_antisemitic_msgs = [doc for doc in batch if not doc.get("Antisemitic", 0)]
+    print(f"Antisemitic: {len(antisemitic_msgs)}, Not antisemitic: {len(not_antisemitic_msgs)}")
     if antisemitic_msgs:
+        print(f"Publishing {len(antisemitic_msgs)} antisemitic messages to raw_tweets_antisemitic")
         send_messages("raw_tweets_antisemitic", antisemitic_msgs)
     if not_antisemitic_msgs:
+        print(f"Publishing {len(not_antisemitic_msgs)} not antisemitic messages to raw_tweets_not_antisemitic")
         send_messages("raw_tweets_not_antisemitic", not_antisemitic_msgs)
 
 def main():
