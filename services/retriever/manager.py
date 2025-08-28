@@ -1,7 +1,6 @@
 import json
 import os
 from services.retriever.db.dal import MongoDAL
-from shared.db.connector import MongoDBConnection
 
 STATE_FILE = os.path.join(os.path.dirname(__file__), 'retriever_state.json')
 
