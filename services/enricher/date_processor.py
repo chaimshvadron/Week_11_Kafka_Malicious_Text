@@ -21,7 +21,7 @@ class DateProcessor:
     def get_latest_date(self, dates_list):
         return max(dates_list)
 
-    def process(self, text):
+    def find_latest_date(self, text):
         dates = self.get_dates_in_text(text)
         if dates:
             date = self.get_latest_date(dates)
